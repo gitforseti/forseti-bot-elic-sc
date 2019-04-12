@@ -20,4 +20,5 @@ class Situacao extends Model
     {
         return $this->hasMany(Licitacao::class, 'id_situacao');
     }
+
 }

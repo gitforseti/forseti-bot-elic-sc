@@ -36,7 +36,7 @@ class CreateModalidade extends AbstractMigration
         $table = $this->table('tb_elic_sc_lic_modalidade', ['id' => false, 'primary_key' => 'id_modalidade']);
         $table->addColumn($col)
             ->addColumn('nm_modalidade', 'string', ['null'=> false])
-            ->addColumn('nm_abreviado', 'string', ['null'=> false])
+            ->addColumn('nm_abreviado', 'string', ['null'=> true])
             ->addTimestamps()
             ->create();
         $table->save();

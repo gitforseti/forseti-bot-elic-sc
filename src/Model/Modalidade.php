@@ -20,4 +20,5 @@ class Modalidade extends Model
     {
         return $this->hasMany(Licitacao::class, 'id_modalidade');
     }
+
 }
