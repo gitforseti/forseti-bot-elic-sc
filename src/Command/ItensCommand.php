@@ -9,14 +9,17 @@
 namespace Forseti\Carga\ElicSC\Command;
 
 
-use Forseti\Carga\ElicSC\Model\Orgao;
+use Forseti\Bot\ElicSC\PageObject\ItensPageObject;
+use Forseti\Bot\ElicSC\PageObject\LicitacoesPageObject;
+use Forseti\Carga\ElicSC\Model\Item;
+use Forseti\Carga\ElicSC\Model\Licitacao;
+use Forseti\Carga\ElicSC\Repository\ItensRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
 
 class ItensCommand extends Command
 {
     use ForsetiLoggerTrait;
-    private $orgao;
 
     protected function configure()
     {
@@ -32,23 +35,23 @@ class ItensCommand extends Command
     {
         $this->info("Iniciando");
 
-        $licitacoesPageObject = new LicitacoesPageObject();
-        $licitacoesIterator = $licitacoesPageObject
-            ->withCodigo(3131)
-            ->getParser()
-            ->getIterator();
-        foreach ($licitacoesIterator as $licitacao) {
+        $licitacoes = Licitacao::all();
+        $licitacoes->each(function ($licitacao) {
             $itensPageObject = new ItensPageObject();
-            $itensIterator = $itensPageObject->getParser($licitacao->codigo, $licitacao->nCdModulo)->getIterator();
-            foreach ($itensIterator as $item) {
+            $itensIterator = $itensPageObject->getParser($licitacao->nu_licitacao, $licitacao->nCdModulo)->getIterator();
+            try {
+                $itens = Item::where('nu_licitacao', $licitacao->nu_licitacao);
+                $itens->delete();
+                ItensRepository::updateFlag($licitacao->nu_licitacao, false);
+                foreach ($itensIterator as $item) {
+                    ItensRepository::insert($licitacao->nu_licitacao, $item);
+                    ItensRepository::updateFlag($licitacao->nu_licitacao, true);
+                }
+            } catch (\Exception $e) {
+                $this->error('erro no ItensCommand: ', ['exception' => $e->getMessage()]);
 
-                $this->assertEquals(1.0, $item->quantidade);
-                $this->assertEquals('Peça', $item->unidadeMedida);
-                $this->assertEquals(220281.66, $item->valorReferencia);
-                $this->assertEquals('Ativo', $item->situacao);
             }
-        }
-
+        });
         $this->info("Finalizando");
     }
 }

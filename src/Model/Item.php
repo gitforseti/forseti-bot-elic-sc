@@ -8,6 +8,7 @@
 
 namespace Forseti\Carga\ElicSC\Model;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -20,4 +21,5 @@ class Item extends Model
     {
         return $this->hasMany(ItemLicitacao::class, 'id_item');
     }
+
 }

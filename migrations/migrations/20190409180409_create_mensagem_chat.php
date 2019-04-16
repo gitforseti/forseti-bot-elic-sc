@@ -35,7 +35,7 @@ class CreateMensagemChat extends AbstractMigration
             ->setSigned(false);
         $table = $this->table('tb_elic_sc_lic_mensagem_chat', ['id' => false, 'primary_key' => 'id_mensagem']);
         $table->addColumn($col)
-            ->addColumn('nu_licitacao', 'string', ['null'=> false])
+            ->addColumn('nu_licitacao', 'biginteger', ['null' => true, 'signed' => false])
             ->addColumn('nu_processo', 'string', ['null'=> true])
             ->addColumn('nm_origem', 'string', ['null'=> true])
             ->addColumn('dt_horario', 'datetime', ['null'=> true])

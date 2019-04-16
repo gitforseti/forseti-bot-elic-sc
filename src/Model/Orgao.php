@@ -15,7 +15,6 @@ class Orgao extends Model
     protected $table = 'tb_elic_sc_lic_orgao';
     protected $primaryKey = 'id_orgao';
     protected $guarded = [];
-    protected $fillable = ['nm_sigla_orgao','nm_orgao'];
 
     public function licitacao()
     {

@@ -30,7 +30,9 @@ class CreateControleCarga extends AbstractMigration
     {
         $col = new Column();
         $col->setName('nu_licitacao')
-            ->setType('string');
+            ->setType('biginteger')
+            ->setIdentity(true)
+            ->setSigned(false);
         $table = $this->table('tb_elic_sc_lic_controle_carga', ['id' => false, 'primary_key' => 'nu_licitacao']);
         $table->addColumn($col)
             ->addColumn('licitacao', 'integer', ['null' => false, 'signed' => false])

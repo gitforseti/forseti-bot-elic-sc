@@ -36,7 +36,7 @@ class CreateAnexo extends AbstractMigration
         $table = $this->table('tb_elic_sc_lic_anexo', ['id' => false, 'primary_key' => 'id_anexo']);
         $table->addColumn($col)
             ->addColumn('id_tipo_anexo', 'integer', ['null' => true, 'signed' => false])
-            ->addColumn('nu_licitacao', 'string', ['null'=> false])
+            ->addColumn('nu_licitacao', 'biginteger', ['null' => true, 'signed' => false])
             ->addColumn('nm_url', 'string', ['null'=> false])
             ->addColumn('nm_arquivo', 'string', ['null'=> false])
             ->addColumn('nm_arquivo_download', 'string', ['null'=> false])

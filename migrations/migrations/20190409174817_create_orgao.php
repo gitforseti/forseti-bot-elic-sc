@@ -36,7 +36,7 @@ class CreateOrgao extends AbstractMigration
         $table = $this->table('tb_elic_sc_lic_orgao', ['id' => false, 'primary_key' => 'id_orgao']);
         $table->addColumn($col)
             ->addColumn('nm_sigla_orgao', 'string', ['null'=> false])
-            ->addColumn('nm_orgao', 'string', ['null'=> false])
+            ->addColumn('nm_orgao', 'string', ['null'=> true])
             ->addTimestamps()
             ->create();
         $table->save();

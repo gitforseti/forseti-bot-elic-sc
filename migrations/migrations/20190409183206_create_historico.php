@@ -36,7 +36,7 @@ class CreateHistorico extends AbstractMigration
         $table = $this->table('tb_elic_sc_lic_historico', ['id' => false, 'primary_key' => 'id_historico']);
         $table->addColumn($col)
             ->addColumn('id_licitacao', 'biginteger', ['null' => true, 'signed' => false])
-            ->addColumn('nu_licitacao', 'string', ['null' => true, 'signed' => false])
+            ->addColumn('nu_licitacao', 'biginteger', ['null' => true, 'signed' => false])
             ->addColumn('nu_processo', 'string', ['null'=> true])
             ->addColumn('nm_origem', 'string', ['null'=> true])
             ->addColumn('dt_horario', 'datetime', ['null'=> false])
