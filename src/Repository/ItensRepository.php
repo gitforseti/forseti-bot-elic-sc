@@ -22,7 +22,7 @@ class ItensRepository
         try{
             $licitacao = Licitacao::find($nu_licitacao);
             if(!$licitacao->flag_item){
-                return Item::firstOrCreate([
+                return Item::create([
                     'nu_licitacao' => $nu_licitacao,
                     'descricao' => $item->item,
                     'descricao_detalhada' => null,

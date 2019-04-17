@@ -30,11 +30,12 @@ class AnexosRepository
     public function insertAnexo($nu_licitacao, $anexo, $tipoAnexo)
     {
         try{
-            Anexo::firstOrCreate([
-                'id_anexo' => $anexo->codigo,
+            return Anexo::create([
+                'nCdAnexo' => $anexo->codigo,
                 'id_tipo_anexo' => $tipoAnexo['id_tipo_anexo'],
                 'nu_licitacao' => $nu_licitacao,
                 'nm_url' => $anexo->urlCompleta,
+                'nm_descricao' => $anexo->descricao,
                 'nm_arquivo' => $anexo->nmArquivoSugerido,
                 'nm_arquivo_download' => $anexo->sNmArquivo,
                 'nm_path' => $anexo->sDsParametroCriptografado,
@@ -42,23 +43,6 @@ class AnexosRepository
             ]);
         }catch (\Exception $e) {
             $this->error('erro ao inserir anexo no banco: ', ['exception' => $e->getMessage()]);
-        }
-    }
-    public function updateAnexo($nu_licitacao, $anexo, $tipoAnexo)
-    {
-        try{
-            $anexoRepository = Anexo::find($anexo->id_anexo);
-            $anexoRepository->id_tipo_anexo = $tipoAnexo['id_tipo_anexo'];
-            $anexoRepository->nu_licitacao = $nu_licitacao;
-            $anexoRepository->nm_url = $anexo->urlCompleta;
-            $anexoRepository->nm_arquivo = $anexo->nmArquivoSugerido;
-            $anexoRepository->nm_arquivo_download = $anexo->sNmArquivo;
-            $anexoRepository->nm_path = $anexo->sDsParametroCriptografado;
-            $anexoRepository->dt_adicionado = $anexo->data;
-            $anexoRepository->save();
-            return $anexoRepository;
-        }catch (\Exception $e) {
-            $this->error('erro ao atualizar flag de anexo no banco: ', ['exception' => $e->getMessage()]);
         }
     }
     public function updateFlag($nu_licitacao, $flag)

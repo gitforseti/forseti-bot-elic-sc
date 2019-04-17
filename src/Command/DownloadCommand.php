@@ -8,11 +8,13 @@
 
 namespace Forseti\Carga\ElicSC\Command;
 
-use Forseti\Bot\ElicSC\PageObject\AnexosPageObject;
 use Forseti\Bot\ElicSC\PageObject\DownloadPageObject;
-use Forseti\Bot\ElicSC\PageObject\LicitacoesPageObject;
+use Forseti\Carga\ElicSC\Model\Anexo;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class DownloadCommand extends Command
 {
@@ -22,37 +24,45 @@ class DownloadCommand extends Command
     {
         $this->setName('licitacao:download')
             ->setDefinition([
-
+                new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
             ->setDescription('Captura os anexos da licitacao.')
             ->setHelp('help aqui');
     }
 
-    protected function execute()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->info("Iniciando");
+        $output->writeln("Iniciando");
 
-        $codigo = 3142;
         if (!is_dir(__DIR__ . DIRECTORY_SEPARATOR . 'downloads')) {
             mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'downloads');
         }
-        $licitacoesPageObject = new LicitacoesPageObject();
-        $licitacoesIterator = $licitacoesPageObject
-            ->withCodigo($codigo)
-            ->getParser()
-            ->getIterator();
-        foreach ($licitacoesIterator as $licitacao) {
-            $anexosPageObject = new AnexosPageObject();
-            $anexosIterator = $anexosPageObject->getParser($licitacao->nCdAnexo)->getIterator();
-            foreach ($anexosIterator as $anexo) {
-                $downloadPageObject = new DownloadPageObject();
-                $diretorioLicitacao = __DIR__ . DIRECTORY_SEPARATOR . 'downloads' . DIRECTORY_SEPARATOR . $anexo->codigo;
+
+        $anexos = null;
+        if($input->getArgument('nu_licitacao')){
+            $anexos = Anexo::where('nu_licitacao',$input->getArgument('nu_licitacao'));
+        }else{
+            $anexos = Anexo::all();
+        }
+        $anexos->each(function ($anexo) {
+            try {
+                $diretorioLicitacao = __DIR__ . DIRECTORY_SEPARATOR . 'downloads' . DIRECTORY_SEPARATOR . $anexo->nu_licitacao;
                 if (!is_dir($diretorioLicitacao)) {
                     mkdir($diretorioLicitacao);
                 }
-                $downloadPageObject->download($diretorioLicitacao, $anexo);
+                $downloadPageObject = new DownloadPageObject();
+                $downloadPageObject->download(
+                    $diretorioLicitacao.DIRECTORY_SEPARATOR.$anexo->nm_arquivo,
+                    $anexo->nm_path
+                );
+            } catch (\Exception $e) {
+                $this->error('erro no DownloadCommand: ', ['exception' => $e->getMessage()]);
+
             }
-        }
+        });
+
         $this->info("Finalizando");
+        $output->writeln("Finalizando");
     }
 }

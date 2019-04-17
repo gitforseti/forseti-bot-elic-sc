@@ -35,9 +35,11 @@ class CreateAnexo extends AbstractMigration
             ->setSigned(false);
         $table = $this->table('tb_elic_sc_lic_anexo', ['id' => false, 'primary_key' => 'id_anexo']);
         $table->addColumn($col)
-            ->addColumn('id_tipo_anexo', 'integer', ['null' => true, 'signed' => false])
+            ->addColumn('id_tipo_anexo', 'biginteger', ['null' => true, 'signed' => false])
+            ->addColumn('nCdAnexo', 'biginteger', ['null' => false, 'signed' => false])
             ->addColumn('nu_licitacao', 'biginteger', ['null' => true, 'signed' => false])
             ->addColumn('nm_url', 'string', ['null'=> false])
+            ->addColumn('nm_descricao', 'string', ['null'=> false])
             ->addColumn('nm_arquivo', 'string', ['null'=> false])
             ->addColumn('nm_arquivo_download', 'string', ['null'=> false])
             ->addColumn('nm_path', 'string', ['null'=> false])

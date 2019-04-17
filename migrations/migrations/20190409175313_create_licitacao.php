@@ -38,7 +38,7 @@ class CreateLicitacao extends AbstractMigration
             ->addColumn('nm_processo', 'string', ['null'=> true])
             ->addColumn('nu_processo', 'string', ['null'=> true])
             ->addColumn('nu_edital', 'string', ['null'=> true])
-            ->addColumn('nCdAnexo', 'string', ['null'=> true])
+            ->addColumn('nCdAnexo', 'biginteger', ['null' => false, 'signed' => false])
             ->addColumn('nCdModulo', 'string', ['null'=> true])
             ->addColumn('nCdSituacao', 'string', ['null'=> true])
             ->addColumn('tmpTipoMuralProcesso', 'string', ['null'=> true])

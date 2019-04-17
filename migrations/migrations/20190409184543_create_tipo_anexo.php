@@ -30,7 +30,7 @@ class CreateTipoAnexo extends AbstractMigration
     {
         $col = new Column();
         $col->setName('id_tipo_anexo')
-            ->setType('integer')
+            ->setType('biginteger')
             ->setIdentity(true)
             ->setSigned(false);
         $table = $this->table('tb_elic_sc_lic_tipo_anexo', ['id' => false, 'primary_key' => 'id_tipo_anexo']);

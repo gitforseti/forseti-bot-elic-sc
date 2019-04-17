@@ -110,7 +110,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:git-forseti/forseti-bot-elic-sc.git",
-                "reference": "e5b482375d3b5bcb53beca1fdd05907f4ddc12ef"
+                "reference": "af2168fdad15d4035b85f5e339e7af428d620b9a"
             },
             "require": {
                 "ext-json": "*",
@@ -145,7 +145,7 @@
                 "ElicSC",
                 "bot"
             ],
-            "time": "2019-04-15T16:40:39+00:00"
+            "time": "2019-04-17T14:52:26+00:00"
         },
         {
             "name": "forseti/elicitacao-sync-carga",

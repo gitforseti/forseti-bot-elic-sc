@@ -11,11 +11,13 @@ namespace Forseti\Carga\ElicSC\Command;
 
 use Forseti\Bot\ElicSC\Enums\Modalidade;
 use Forseti\Bot\ElicSC\PageObject\DetalhePageObject;
-use Forseti\Bot\ElicSC\PageObject\LicitacoesPageObject;
 use Forseti\Carga\ElicSC\Model\Licitacao;
 use Forseti\Carga\ElicSC\Repository\DetalheRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class DetalheCommand extends Command
 {
@@ -25,17 +27,24 @@ class DetalheCommand extends Command
     {
         $this->setName('licitacao:detalhe')
             ->setDefinition([
-
+                new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
             ->setDescription('Captura os orgaos da licitacao.')
             ->setHelp('help aqui');
     }
 
-    protected function execute()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->info("Iniciando");
+        $output->writeln("Iniciando");
 
-        $licitacoes = Licitacao::all();
+        $licitacoes = null;
+        if($input->getArgument('nu_licitacao')){
+            $licitacoes = Licitacao::where('nu_licitacao',$input->getArgument('nu_licitacao'));
+        }else{
+            $licitacoes = Licitacao::all();
+        }
+
         $licitacoes->each(function($licitacao)
         {
             $detalhePageObject = new DetalhePageObject();
@@ -50,6 +59,7 @@ class DetalheCommand extends Command
         });
 
         $this->info("Finalizando");
+        $output->writeln("Finalizando");
     }
 
 }

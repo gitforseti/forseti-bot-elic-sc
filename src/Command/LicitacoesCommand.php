@@ -9,12 +9,15 @@
 namespace Forseti\Carga\ElicSC\Command;
 
 
-use Forseti\Bot\ElicSC\Enums\Modalidade as ModalidadeEnum;
+use Forseti\Bot\ElicSC\Enums\ModalidadeEnum;
 use Forseti\Bot\ElicSC\Enums\Situacao\PregaoEletronico;
 use Forseti\Bot\ElicSC\PageObject\LicitacoesPageObject;
 use Forseti\Carga\ElicSC\Repository\LicitacoesRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class LicitacoesCommand extends Command
 {
@@ -24,23 +27,22 @@ class LicitacoesCommand extends Command
     {
         $this->setName('licitacao:licitacoes')
             ->setDefinition([
-
+                new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
             ->setDescription('Captura os orgaos da licitacao.')
             ->setHelp('help aqui');
     }
 
-    protected function execute()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->info("Iniciando");
-
-        $detalhe = null;
-        $dtEdital = null;
+        $output->writeln("Iniciando");
 
         $licitacoesPageObject = new LicitacoesPageObject();
+        if($input->getArgument('nu_licitacao')){
+            $licitacoesPageObject->withCodigo($input->getArgument('nu_licitacao'));
+        }
         $licitacaoIterator = $licitacoesPageObject
-            ->withCodigo(3143)
-            ->withModalidade(ModalidadeEnum::PREGAO_ELETRONICO)
             ->getParser()
             ->getIterator();
         foreach ($licitacaoIterator as $licitacao) {
@@ -50,7 +52,9 @@ class LicitacoesCommand extends Command
             LicitacoesRepository::insertLicitacao($licitacao, $orgao, $modalidade, $situacao);
             LicitacoesRepository::updateLicitacao($licitacao, $orgao, $modalidade, $situacao); //se ela já estiver criada recebe um update
         }
+
         $this->info("Finalizando");
+        $output->writeln("Finalizando");
     }
 
 }
