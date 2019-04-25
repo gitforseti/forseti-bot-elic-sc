@@ -42,3 +42,6 @@ class CreateSituacao extends AbstractMigration
         $table->save();
     }
 }
+
+
+

@@ -1,6 +1,6 @@
-# FORSETI CARGA - BOLSA DE LICITAÇÕES DO BRASIL - BLL
+# FORSETI CARGA - ELIC-SC
 
-Projeto de Carga no [portal Bolsa de Licitacoes do Brasil](http://bll.org.br/)
+Projeto de Carga no [portal Elic-SC](https://e-lic.sc.gov.br)
 
 
 ## Instalação
@@ -20,40 +20,28 @@ composer install
 
 **Captura:**
 
-   - Busca realizada por data, deve seguir o padrão: Y-m-d. Caso não tenha sido passada nenhuma, serão capturadas as licitações do dia.
- 
+   - Captura todas as licitações do portal:
 ```
-php bin/console.php licitacao:captura
-
+php bin/console.php licitacao:licitacoes 
 ```   
 
-- Exemplo com data 
-
+   - Captura licitação específica com base no código da licitação:
 ```
-php bin/console.php licitacao:captura 2019-02-01 2019-02-14
-
-
+php bin/console.php licitacao:licitacoes 3143
 ```   
 
-
-**Processa:** 
-
-   - Captura detalhes, lotes, itens e anexos
-   - Parâmetro -c cancela o download dos anexos para fins de debug
-   
+   - Captura outros dados das licitações que já estão no banco:
 ```
-php bin/console.php licitacao:processa 
-php bin/console.php licitacao:processa -c
-
+php bin/console.php licitacao:detalhe
+php bin/console.php licitacao:itens
+php bin/console.php licitacao:anexos
+php bin/console.php licitacao:download
+```   
+   - Captura dado de licitação específica que necessita estar previamente no banco:
+```
+php bin/console.php licitacao:detalhe 3143
+php bin/console.php licitacao:itens 3143
+php bin/console.php licitacao:anexos 3143
+php bin/console.php licitacao:download 3143
 ```   
 
-    
-**Sicroniza:**
-
-   - Envia as licitações com status processada no banco de dados para o Mongo
-    
-   
-```
-php bin/console.php licitacao:sincroniza 
-
-```   

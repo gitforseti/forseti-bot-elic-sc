@@ -8,6 +8,7 @@
 
 namespace Forseti\Carga\ElicSC\Repository;
 
+use Forseti\Carga\ElicSC\Model\ControleCarga;
 use Forseti\Carga\ElicSC\Model\Licitacao;
 use Forseti\Carga\ElicSC\Model\Orgao;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
@@ -40,4 +41,19 @@ class DetalheRepository
         }
     }
 
+    public function controleCarga($nu_licitacao, $flag)
+    {
+        try{
+            $controleCarga = ControleCarga::firstOrCreate([
+                'nu_licitacao' => $nu_licitacao
+            ]);
+            $controleCarga->detalhe = $flag;
+            $date = new \DateTime();
+            $date->setTimezone(new \DateTimeZone('Etc/GMT+3'));
+            $controleCarga->dt_detalhe = $date;
+            $controleCarga->save();
+        }catch (\Exception $e) {
+            $this->error('erro ao atualizar controleCarga do detalhe: ', ['exception' => $e->getMessage()]);
+        }
+    }
 }

@@ -29,13 +29,12 @@ class ItensCommand extends Command
             ->setDefinition([
                 new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
-            ->setDescription('Captura os orgaos da licitacao.')
+            ->setDescription('Captura os itens da licitacao.')
             ->setHelp('help aqui');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->info("Iniciando");
         $output->writeln("Iniciando");
 
         $licitacoes = null;
@@ -56,12 +55,12 @@ class ItensCommand extends Command
                     ItensRepository::insert($licitacao->nu_licitacao, $item);
                 }
                 ItensRepository::updateFlag($licitacao->nu_licitacao, true);
+                ItensRepository::controleCarga($licitacao->nu_licitacao, true);
             } catch (\Exception $e) {
                 $this->error('erro no ItensCommand: ', ['exception' => $e->getMessage()]);
-
             }
         });
-        $this->info("Finalizando");
+
         $output->writeln("Finalizando");
     }
 }

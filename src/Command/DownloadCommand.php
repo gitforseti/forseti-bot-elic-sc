@@ -10,6 +10,8 @@ namespace Forseti\Carga\ElicSC\Command;
 
 use Forseti\Bot\ElicSC\PageObject\DownloadPageObject;
 use Forseti\Carga\ElicSC\Model\Anexo;
+use Forseti\Carga\ElicSC\Repository\AnexosRepository;
+use Forseti\Carga\ElicSC\Repository\DownloadRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,18 +28,14 @@ class DownloadCommand extends Command
             ->setDefinition([
                 new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
-            ->setDescription('Captura os anexos da licitacao.')
+            ->setDescription('Faz download dos anexos da licitacao.')
             ->setHelp('help aqui');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->info("Iniciando");
         $output->writeln("Iniciando");
 
-        if (!is_dir(__DIR__ . DIRECTORY_SEPARATOR . 'downloads')) {
-            mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'downloads');
-        }
 
         $anexos = null;
         if($input->getArgument('nu_licitacao')){
@@ -47,22 +45,25 @@ class DownloadCommand extends Command
         }
         $anexos->each(function ($anexo) {
             try {
-                $diretorioLicitacao = __DIR__ . DIRECTORY_SEPARATOR . 'downloads' . DIRECTORY_SEPARATOR . $anexo->nu_licitacao;
+                $config = require __DIR__ . "/../../config/config.php";
+                $diretorioLicitacao = $config['app.path_anexo'].DIRECTORY_SEPARATOR. $anexo->nu_licitacao;
                 if (!is_dir($diretorioLicitacao)) {
                     mkdir($diretorioLicitacao);
                 }
+                $pathCompleto = $diretorioLicitacao.DIRECTORY_SEPARATOR.$anexo->nm_arquivo;
                 $downloadPageObject = new DownloadPageObject();
                 $downloadPageObject->download(
-                    $diretorioLicitacao.DIRECTORY_SEPARATOR.$anexo->nm_arquivo,
+                    $pathCompleto,
                     $anexo->nm_path
                 );
+                AnexosRepository::updateNmPath($anexo->id_anexo, $pathCompleto);
+                DownloadRepository::controleCarga($anexo->nu_licitacao, true);
             } catch (\Exception $e) {
                 $this->error('erro no DownloadCommand: ', ['exception' => $e->getMessage()]);
 
             }
         });
 
-        $this->info("Finalizando");
         $output->writeln("Finalizando");
     }
 }

@@ -1,0 +1,57 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: joaosilva
+ * Date: 08/02/19
+ * Time: 08:39
+ */
+
+
+return [
+    // CAMINHOS DE LOG
+    'log.path_crawler' => '/var/log/crawlers/crawler.log',
+    'log.path_sync' => '/var/log/crawlers/crawler.log',
+    'log.sync_name' => 'elic-sc',
+    'log.carga_name' => 'elic-sc',
+    'log.console' => true,
+
+    // DADOS DO APP
+    'app.name' => 'Elic-SC Crawler',
+    'app.path_anexo' => '/var/www/html/forseti-carga-elic-sc/anexos',
+
+    // MYSQL CONFIG
+    'mysql.options' => [
+        'driver' => 'mysql',
+        'host' => '127.0.0.1',
+        'database' => 'licitacao_carga_elic_sc',
+        'username' => 'usuario',
+        'password' => 'senha',
+        'charset'  => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => '',
+        'port'     => '3306'
+    ],
+
+    // SYNC ELICITACAO CONFIG
+    'elicitacao.config' => [
+        'elicitacao' => [
+            'user' => 'usuario',
+            'pass' => 'senha',
+            'host' => 'http://elicitacao.com.br-local.dev' //só será usado para desenv, produção não precisa ter essa configuração
+        ],
+        'mongodb' => [
+            'host' => 'mongodb://localhost:27017',
+            'options' => [
+                //'username' => '',
+                //'password' => '',
+                'db' => 'admin',
+                'connect' => true
+            ],
+            'database' => 'carga_licitacao_elic_sc',
+        ]
+    ],
+
+
+    "sentry_key" => "",
+
+];

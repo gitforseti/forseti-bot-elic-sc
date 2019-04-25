@@ -8,6 +8,7 @@
 
 namespace Forseti\Carga\ElicSC\Repository;
 
+use Forseti\Carga\ElicSC\Model\ControleCarga;
 use Forseti\Carga\ElicSC\Model\Licitacao;
 use Forseti\Carga\ElicSC\Model\Modalidade;
 use Forseti\Carga\ElicSC\Model\Orgao;
@@ -92,6 +93,22 @@ class LicitacoesRepository
             return $licitacaoRepository;
         }catch (\Exception $e) {
             $this->error('erro ao atualizar flag do item no banco: ', ['exception' => $e->getMessage()]);
+        }
+    }
+
+    public function controleCarga($nu_licitacao, $flag)
+    {
+        try{
+            $controleCarga = ControleCarga::firstOrCreate([
+                'nu_licitacao' => $nu_licitacao
+            ]);
+            $controleCarga->licitacao = $flag;
+            $date = new \DateTime();
+            $date->setTimezone(new \DateTimeZone('Etc/GMT+3'));
+            $controleCarga->dt_licitacao = $date;
+            $controleCarga->save();
+        }catch (\Exception $e) {
+            $this->error('erro ao atualizar controleCarga da licitacao: ', ['exception' => $e->getMessage()]);
         }
     }
 }

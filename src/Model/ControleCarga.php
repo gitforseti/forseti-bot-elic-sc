@@ -15,6 +15,7 @@ class ControleCarga extends Model
     protected $table = 'tb_elic_sc_lic_controle_carga';
     protected $primaryKey = 'nu_licitacao';
     protected $guarded = [];
+    const UPDATED_AT = null;
 
     public function orgao()
     {

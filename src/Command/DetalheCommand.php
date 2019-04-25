@@ -9,7 +9,6 @@
 namespace Forseti\Carga\ElicSC\Command;
 
 
-use Forseti\Bot\ElicSC\Enums\Modalidade;
 use Forseti\Bot\ElicSC\PageObject\DetalhePageObject;
 use Forseti\Carga\ElicSC\Model\Licitacao;
 use Forseti\Carga\ElicSC\Repository\DetalheRepository;
@@ -29,13 +28,12 @@ class DetalheCommand extends Command
             ->setDefinition([
                 new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
-            ->setDescription('Captura os orgaos da licitacao.')
+            ->setDescription('Captura os detalhes da licitacao.')
             ->setHelp('help aqui');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->info("Iniciando");
         $output->writeln("Iniciando");
 
         $licitacoes = null;
@@ -54,11 +52,15 @@ class DetalheCommand extends Command
                 $licitacao->nCdSituacao,
                 $licitacao->tmpTipoMuralProcesso
             )->getObject();
-            DetalheRepository::updateOrgao($licitacao->id_orgao, $detalhe);
-            DetalheRepository::updateDetalhe($licitacao->nu_licitacao, $detalhe);
+            try{
+                DetalheRepository::updateOrgao($licitacao->id_orgao, $detalhe);
+                DetalheRepository::updateDetalhe($licitacao->nu_licitacao, $detalhe);
+                DetalheRepository::controleCarga($licitacao->nu_licitacao, true);
+            } catch (\Exception $e) {
+                $this->error('erro no DetalheCommand: ', ['exception' => $e->getMessage()]);
+            }
         });
 
-        $this->info("Finalizando");
         $output->writeln("Finalizando");
     }
 

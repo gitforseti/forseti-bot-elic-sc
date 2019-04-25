@@ -8,9 +8,6 @@
 
 namespace Forseti\Carga\ElicSC\Command;
 
-
-use Forseti\Bot\ElicSC\Enums\ModalidadeEnum;
-use Forseti\Bot\ElicSC\Enums\Situacao\PregaoEletronico;
 use Forseti\Bot\ElicSC\PageObject\LicitacoesPageObject;
 use Forseti\Carga\ElicSC\Repository\LicitacoesRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
@@ -29,13 +26,12 @@ class LicitacoesCommand extends Command
             ->setDefinition([
                 new InputArgument('nu_licitacao', InputArgument::OPTIONAL, 'Número da Licitação')
             ])
-            ->setDescription('Captura os orgaos da licitacao.')
+            ->setDescription('Captura a licitacao.')
             ->setHelp('help aqui');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->info("Iniciando");
         $output->writeln("Iniciando");
 
         $licitacoesPageObject = new LicitacoesPageObject();
@@ -46,14 +42,18 @@ class LicitacoesCommand extends Command
             ->getParser()
             ->getIterator();
         foreach ($licitacaoIterator as $licitacao) {
-            $orgao = LicitacoesRepository::insertOrgao($licitacao);
-            $modalidade = LicitacoesRepository::insertModalidade($licitacao);
-            $situacao = LicitacoesRepository::insertSituacao($licitacao);
-            LicitacoesRepository::insertLicitacao($licitacao, $orgao, $modalidade, $situacao);
-            LicitacoesRepository::updateLicitacao($licitacao, $orgao, $modalidade, $situacao); //se ela já estiver criada recebe um update
+            try{
+                $orgao = LicitacoesRepository::insertOrgao($licitacao);
+                $modalidade = LicitacoesRepository::insertModalidade($licitacao);
+                $situacao = LicitacoesRepository::insertSituacao($licitacao);
+                LicitacoesRepository::insertLicitacao($licitacao, $orgao, $modalidade, $situacao);
+                LicitacoesRepository::updateLicitacao($licitacao, $orgao, $modalidade, $situacao); //se ela já estiver criada recebe um update
+                LicitacoesRepository::controleCarga($licitacao->codigo, true);
+            }catch (\Exception $e) {
+                $this->error('erro no LicitacoesCommand: ', ['exception' => $e->getMessage()]);
+            }
         }
 
-        $this->info("Finalizando");
         $output->writeln("Finalizando");
     }
 

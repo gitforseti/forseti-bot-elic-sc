@@ -2,7 +2,6 @@
 
 namespace Forseti\Carga\ElicSC\Command;
 
-use Forseti\Bot\ElicSC\Enums\Modalidade;
 use Forseti\Bot\ElicSC\PageObject\AnexosPageObject;
 use Forseti\Carga\ElicSC\Model\Anexo;
 use Forseti\Carga\ElicSC\Model\Licitacao;
@@ -35,7 +34,6 @@ class AnexosCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->info("Iniciando");
         $output->writeln("Iniciando");
 
         $licitacoes = null;
@@ -57,13 +55,12 @@ class AnexosCommand extends Command
                     AnexosRepository::insertAnexo($licitacao->nu_licitacao, $anexo, $tipoAnexo);
                 }
                 AnexosRepository::updateFlag($licitacao->nu_licitacao, true);
+                AnexosRepository::controleCarga($licitacao->nu_licitacao, true);
             }catch(\Exception $e){
                 $this->error('erro no AnexosCommand: ', ['exception' => $e->getMessage()]);
             }
         });
 
-
-        $this->info("Finalizando");
         $output->writeln("Finalizando");
     }
 }
