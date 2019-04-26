@@ -5,7 +5,9 @@ namespace Forseti\Carga\ElicSC\Command;
 use Forseti\Bot\ElicSC\PageObject\AnexosPageObject;
 use Forseti\Carga\ElicSC\Model\Anexo;
 use Forseti\Carga\ElicSC\Model\Licitacao;
-use Forseti\Carga\ElicSC\Repository\AnexosRepository;
+use Forseti\Carga\ElicSC\Repository\AnexoRepository;
+use Forseti\Carga\ElicSC\Repository\ControleCargaRepository;
+use Forseti\Carga\ElicSC\Repository\TipoAnexoRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -46,16 +48,15 @@ class AnexosCommand extends Command
             try {
                 $anexos = Anexo::where('nu_licitacao', $licitacao->nu_licitacao);
                 $anexos->delete();
-                AnexosRepository::updateFlag($licitacao->nu_licitacao, false);
+                ControleCargaRepository::updateAnexo($licitacao->nu_licitacao, false);
 
                 $anexosPageObject = new AnexosPageObject();
                 $anexosIterator = $anexosPageObject->getParser($licitacao->nCdAnexo)->getIterator();
                 foreach ($anexosIterator as $anexo) {
-                    $tipoAnexo = AnexosRepository::insertTipoAnexo($anexo);
-                    AnexosRepository::insertAnexo($licitacao->nu_licitacao, $anexo, $tipoAnexo);
+                    $tipoAnexo = TipoAnexoRepository::insert($anexo);
+                    AnexoRepository::insert($licitacao->nu_licitacao, $anexo, $tipoAnexo);
                 }
-                AnexosRepository::updateFlag($licitacao->nu_licitacao, true);
-                AnexosRepository::controleCarga($licitacao->nu_licitacao, true);
+                ControleCargaRepository::updateAnexo($licitacao->nu_licitacao, true);
             }catch(\Exception $e){
                 $this->error('erro no AnexosCommand: ', ['exception' => $e->getMessage()]);
             }

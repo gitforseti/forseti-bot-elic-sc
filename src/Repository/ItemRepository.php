@@ -14,15 +14,14 @@ use Forseti\Carga\ElicSC\Model\Item;
 use Forseti\Carga\ElicSC\Model\Licitacao;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 
-class ItensRepository
+class ItemRepository
 {
     use ForsetiLoggerTrait;
 
     public function insert($nu_licitacao, $item)
     {
         try{
-            $licitacao = Licitacao::find($nu_licitacao);
-            if(!$licitacao->flag_item){
+            if(!ControleCargaRepository::getControleCarga($nu_licitacao)->item){
                 return Item::create([
                     'nu_licitacao' => $nu_licitacao,
                     'descricao' => $item->item,
@@ -39,30 +38,4 @@ class ItensRepository
         }
     }
 
-    public function updateFlag($nu_licitacao, $flag)
-    {
-        try{
-            $licitacao = Licitacao::find($nu_licitacao);
-            $licitacao->flag_item = $flag;
-            $licitacao->save();
-        }catch (\Exception $e) {
-            $this->error('erro ao atualizar flag do item no banco: ', ['exception' => $e->getMessage()]);
-        }
-    }
-
-    public function controleCarga($nu_licitacao, $flag)
-    {
-        try{
-            $controleCarga = ControleCarga::firstOrCreate([
-                'nu_licitacao' => $nu_licitacao
-            ]);
-            $controleCarga->item = $flag;
-            $date = new \DateTime();
-            $date->setTimezone(new \DateTimeZone('Etc/GMT+3'));
-            $controleCarga->dt_item = $date;
-            $controleCarga->save();
-        }catch (\Exception $e) {
-            $this->error('erro ao atualizar controleCarga do item: ', ['exception' => $e->getMessage()]);
-        }
-    }
 }

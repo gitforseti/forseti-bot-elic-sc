@@ -10,7 +10,8 @@ namespace Forseti\Carga\ElicSC\Command;
 
 use Forseti\Bot\ElicSC\PageObject\DownloadPageObject;
 use Forseti\Carga\ElicSC\Model\Anexo;
-use Forseti\Carga\ElicSC\Repository\AnexosRepository;
+use Forseti\Carga\ElicSC\Repository\AnexoRepository;
+use Forseti\Carga\ElicSC\Repository\ControleCargaRepository;
 use Forseti\Carga\ElicSC\Repository\DownloadRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
@@ -56,8 +57,8 @@ class DownloadCommand extends Command
                     $pathCompleto,
                     $anexo->nm_path
                 );
-                AnexosRepository::updateNmPath($anexo->id_anexo, $pathCompleto);
-                DownloadRepository::controleCarga($anexo->nu_licitacao, true);
+                AnexoRepository::updateNmPath($anexo->id_anexo, $pathCompleto);
+                ControleCargaRepository::updateDownload($anexo->nu_licitacao, true);
             } catch (\Exception $e) {
                 $this->error('erro no DownloadCommand: ', ['exception' => $e->getMessage()]);
 

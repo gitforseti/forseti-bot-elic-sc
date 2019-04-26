@@ -9,7 +9,11 @@
 namespace Forseti\Carga\ElicSC\Command;
 
 use Forseti\Bot\ElicSC\PageObject\LicitacoesPageObject;
-use Forseti\Carga\ElicSC\Repository\LicitacoesRepository;
+use Forseti\Carga\ElicSC\Repository\ControleCargaRepository;
+use Forseti\Carga\ElicSC\Repository\LicitacaoRepository;
+use Forseti\Carga\ElicSC\Repository\ModalidadeRepository;
+use Forseti\Carga\ElicSC\Repository\OrgaoRepository;
+use Forseti\Carga\ElicSC\Repository\SituacaoRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,12 +47,12 @@ class LicitacoesCommand extends Command
             ->getIterator();
         foreach ($licitacaoIterator as $licitacao) {
             try{
-                $orgao = LicitacoesRepository::insertOrgao($licitacao);
-                $modalidade = LicitacoesRepository::insertModalidade($licitacao);
-                $situacao = LicitacoesRepository::insertSituacao($licitacao);
-                LicitacoesRepository::insertLicitacao($licitacao, $orgao, $modalidade, $situacao);
-                LicitacoesRepository::updateLicitacao($licitacao, $orgao, $modalidade, $situacao); //se ela já estiver criada recebe um update
-                LicitacoesRepository::controleCarga($licitacao->codigo, true);
+                $orgao = OrgaoRepository::insert($licitacao);
+                $modalidade = ModalidadeRepository::insert($licitacao);
+                $situacao = SituacaoRepository::insert($licitacao);
+                LicitacaoRepository::insert($licitacao, $orgao, $modalidade, $situacao);
+                LicitacaoRepository::update($licitacao, $orgao, $modalidade, $situacao); //se ela já estiver criada recebe um update
+                ControleCargaRepository::updateLicitacao($licitacao->codigo, true);
             }catch (\Exception $e) {
                 $this->error('erro no LicitacoesCommand: ', ['exception' => $e->getMessage()]);
             }

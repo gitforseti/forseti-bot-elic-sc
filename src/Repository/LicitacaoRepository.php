@@ -8,50 +8,14 @@
 
 namespace Forseti\Carga\ElicSC\Repository;
 
-use Forseti\Carga\ElicSC\Model\ControleCarga;
 use Forseti\Carga\ElicSC\Model\Licitacao;
-use Forseti\Carga\ElicSC\Model\Modalidade;
-use Forseti\Carga\ElicSC\Model\Orgao;
-use Forseti\Carga\ElicSC\Model\Situacao;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 
-class LicitacoesRepository
+class LicitacaoRepository
 {
     use ForsetiLoggerTrait;
 
-    public function insertOrgao($licitacao)
-    {
-        try {
-            return Orgao::firstOrCreate([
-                'nm_sigla_orgao' => $licitacao->unidadeCompradoraAbreviado,
-                'nm_orgao' => null
-            ]);
-        }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
-        }
-    }
-    public function insertModalidade($licitacao)
-    {
-        try {
-            return Modalidade::firstOrCreate([
-                'nm_modalidade' => $licitacao->modalidade,
-                'nm_abreviado' => null
-            ]);
-        }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
-        }
-    }
-    public function insertSituacao($licitacao)
-    {
-        try {
-            return Situacao::firstOrCreate([
-                'nm_situacao' => $licitacao->situacao
-            ]);
-        }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
-        }
-    }
-    public function insertLicitacao($licitacao, $orgao, $modalidade, $situacao)
+    public function insert($licitacao, $orgao, $modalidade, $situacao)
     {
         try {
             return Licitacao::firstOrCreate([
@@ -77,7 +41,7 @@ class LicitacoesRepository
             $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
         }
     }
-    public function updateLicitacao($licitacao, $orgao, $modalidade, $situacao)
+    public function update($licitacao, $orgao, $modalidade, $situacao)
     {
         try{
             $licitacaoRepository = Licitacao::find($licitacao->codigo);
@@ -95,20 +59,18 @@ class LicitacoesRepository
             $this->error('erro ao atualizar flag do item no banco: ', ['exception' => $e->getMessage()]);
         }
     }
-
-    public function controleCarga($nu_licitacao, $flag)
+    public function updateDetalhe($nu_licitacao, $detalhe)
     {
-        try{
-            $controleCarga = ControleCarga::firstOrCreate([
-                'nu_licitacao' => $nu_licitacao
-            ]);
-            $controleCarga->licitacao = $flag;
-            $date = new \DateTime();
-            $date->setTimezone(new \DateTimeZone('Etc/GMT+3'));
-            $controleCarga->dt_licitacao = $date;
-            $controleCarga->save();
+        try {
+            $licitacao = Licitacao::find($nu_licitacao);
+            $licitacao->nu_edital = $detalhe->edital;
+            $licitacao->nm_objeto = $detalhe->objeto;
+            $licitacao->dt_abertura_proposta = $detalhe->aberturaPropostas;
+            $licitacao->dt_fim_proposta = $detalhe->terminoPropostas;
+            $licitacao->save();
         }catch (\Exception $e) {
-            $this->error('erro ao atualizar controleCarga da licitacao: ', ['exception' => $e->getMessage()]);
+            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
         }
     }
+
 }

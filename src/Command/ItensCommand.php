@@ -12,7 +12,8 @@ namespace Forseti\Carga\ElicSC\Command;
 use Forseti\Bot\ElicSC\PageObject\ItensPageObject;
 use Forseti\Carga\ElicSC\Model\Item;
 use Forseti\Carga\ElicSC\Model\Licitacao;
-use Forseti\Carga\ElicSC\Repository\ItensRepository;
+use Forseti\Carga\ElicSC\Repository\ControleCargaRepository;
+use Forseti\Carga\ElicSC\Repository\ItemRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -50,12 +51,11 @@ class ItensCommand extends Command
             try {
                 $itens = Item::where('nu_licitacao', $licitacao->nu_licitacao);
                 $itens->delete();
-                ItensRepository::updateFlag($licitacao->nu_licitacao, false);
+                ControleCargaRepository::updateItem($licitacao->nu_licitacao, false);
                 foreach ($itensIterator as $item) {
-                    ItensRepository::insert($licitacao->nu_licitacao, $item);
+                    ItemRepository::insert($licitacao->nu_licitacao, $item);
                 }
-                ItensRepository::updateFlag($licitacao->nu_licitacao, true);
-                ItensRepository::controleCarga($licitacao->nu_licitacao, true);
+                ControleCargaRepository::updateItem($licitacao->nu_licitacao, true);
             } catch (\Exception $e) {
                 $this->error('erro no ItensCommand: ', ['exception' => $e->getMessage()]);
             }

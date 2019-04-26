@@ -11,7 +11,10 @@ namespace Forseti\Carga\ElicSC\Command;
 
 use Forseti\Bot\ElicSC\PageObject\DetalhePageObject;
 use Forseti\Carga\ElicSC\Model\Licitacao;
+use Forseti\Carga\ElicSC\Repository\ControleCargaRepository;
 use Forseti\Carga\ElicSC\Repository\DetalheRepository;
+use Forseti\Carga\ElicSC\Repository\LicitacaoRepository;
+use Forseti\Carga\ElicSC\Repository\OrgaoRepository;
 use Forseti\Carga\ElicSC\Traits\ForsetiLoggerTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -53,9 +56,9 @@ class DetalheCommand extends Command
                 $licitacao->tmpTipoMuralProcesso
             )->getObject();
             try{
-                DetalheRepository::updateOrgao($licitacao->id_orgao, $detalhe);
-                DetalheRepository::updateDetalhe($licitacao->nu_licitacao, $detalhe);
-                DetalheRepository::controleCarga($licitacao->nu_licitacao, true);
+                OrgaoRepository::updateDetalhe($licitacao->id_orgao, $detalhe);
+                LicitacaoRepository::updateDetalhe($licitacao->nu_licitacao, $detalhe);
+                ControleCargaRepository::updateDetalhe($licitacao->nu_licitacao, true);
             } catch (\Exception $e) {
                 $this->error('erro no DetalheCommand: ', ['exception' => $e->getMessage()]);
             }
