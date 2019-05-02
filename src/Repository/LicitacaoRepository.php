@@ -38,7 +38,7 @@ class LicitacaoRepository
                 'dt_disputa' => null // verificar o que é isso
             ]);
         }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
+            $this->error('Erro ao inserir licitacao no banco: ', ['exception' => $e->getMessage()]);
         }
     }
     public function update($licitacao, $orgao, $modalidade, $situacao)
@@ -56,7 +56,7 @@ class LicitacaoRepository
             $licitacaoRepository->save();
             return $licitacaoRepository;
         }catch (\Exception $e) {
-            $this->error('erro ao atualizar flag do item no banco: ', ['exception' => $e->getMessage()]);
+            $this->error('erro ao atualizar licitacao no banco: ', ['exception' => $e->getMessage()]);
         }
     }
     public function updateDetalhe($nu_licitacao, $detalhe)

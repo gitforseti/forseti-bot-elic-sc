@@ -22,7 +22,7 @@ class OrgaoRepository
                 'nm_orgao' => null
             ]);
         }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
+            $this->error('Erro ao inserir orgao no banco: ', ['exception' => $e->getMessage()]);
         }
     }
     public function updateDetalhe($id_orgao, $detalhe)
@@ -32,7 +32,7 @@ class OrgaoRepository
             $orgao->nm_orgao = $detalhe->unidadeCompradora;
             $orgao->save();
         }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
+            $this->error('Erro ao inserir detalhe do orgao no banco: ', ['exception' => $e->getMessage()]);
         }
     }
 }

@@ -20,7 +20,7 @@ class SituacaoRepository
                 'nm_situacao' => $licitacao->situacao
             ]);
         }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
+            $this->error('Erro ao inserir licitacao no banco: ', ['exception' => $e->getMessage()]);
         }
     }
 

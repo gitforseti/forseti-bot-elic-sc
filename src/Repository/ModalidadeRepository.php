@@ -21,7 +21,7 @@ class ModalidadeRepository
                 'nm_abreviado' => null
             ]);
         }catch (\Exception $e) {
-            $this->error('Erro ao inserir licitacao: ', ['exception' => $e->getMessage()]);
+            $this->error('Erro ao inserir modalidade no banco: ', ['exception' => $e->getMessage()]);
         }
     }
 

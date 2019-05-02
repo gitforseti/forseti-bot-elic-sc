@@ -53,8 +53,7 @@ class AnexosCommand extends Command
                 $anexosPageObject = new AnexosPageObject();
                 $anexosIterator = $anexosPageObject->getParser($licitacao->nCdAnexo)->getIterator();
                 foreach ($anexosIterator as $anexo) {
-                    $tipoAnexo = TipoAnexoRepository::insert($anexo);
-                    AnexoRepository::insert($licitacao->nu_licitacao, $anexo, $tipoAnexo);
+                    AnexoRepository::insert($licitacao->nu_licitacao, $anexo);
                 }
                 ControleCargaRepository::updateAnexo($licitacao->nu_licitacao, true);
             }catch(\Exception $e){
